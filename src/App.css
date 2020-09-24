@@ -37,13 +37,13 @@
 /*  }*/
 /*}*/
 
-.animated-img {
-  margin-top: 500px;
-  height: 10rem;
+hr {
+  margin-top: 200px;
+  /* height: 10rem;
   position: absolute;
-  display: block;
+  display: block; */
 }
-
+/* 
 .animated-div {
   height: 100%;
-}
+} */

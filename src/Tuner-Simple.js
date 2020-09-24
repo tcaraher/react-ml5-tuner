@@ -1,12 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ml5 from 'ml5';
-import {motion} from "framer-motion";
+import { motion } from 'framer-motion';
 import useAudioContext from './use-audio-context';
 import useInterval from './use-interval';
 import logo from './logo.svg';
 import './App.css';
+import notes from './notes';
+// import scale2 from './scale2';
 
 const scale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+const scale2 = [
+  'A',
+  'A#',
+  'B',
+  'C',
+  'C#',
+  'D',
+  'D#',
+  'E',
+  'F',
+  'F#',
+  'G',
+  'G#',
+];
+
 
 function freqToMidi(f) {
   if (!f) {
@@ -16,8 +33,38 @@ function freqToMidi(f) {
   return Math.round(12 * mathlog2) + 69;
 }
 
+// Calculate how many semitones freq is away from 440.
+function fToNote(f) {
+  let A = 440;
+  let i = 0;
+  let semiDiff = 0;
+  let note = scale2[i];
+  if (!f) {
+    return null;
+  }
+  semiDiff = Math.round(Math.log(f / A) / Math.log(1.059463)); 
+  if (semiDiff > 11) {
+    semiDiff = (semiDiff-12)
+  } else if (semiDiff < -12) {
+    semiDiff = (semiDiff + 12)
+  }
+  if (semiDiff < 0) {
+    note = scale2[scale2.length + semiDiff]
+  }
+    note = scale2[semiDiff]
+  let correctFreq = A * Math.pow(1.059463,semiDiff)
+  let diff = f - correctFreq
+  if (diff > 20 || diff < -20) {
+    return diff = 0
+  }
+  return diff
+  // can also return the note here too...
+}
+
 const midiToNote = (midiNum) => scale[midiNum % 12];
 const freqToNote = (frequency) => midiToNote(freqToMidi(frequency));
+
+
 const modeWithConfidence = (arr, limit) => {
   const numMapping = {};
   let greatestFreq = 0;
@@ -40,14 +87,14 @@ const modeWithConfidence = (arr, limit) => {
   return { mode, greatestFreq, modalMisses };
 };
 
-const TunerSimple = () => {
+const TunerSimple = (effect, deps) => {
   const pitchDetectorRef = useRef();
   const audioContextRef = useAudioContext();
   const [modelLoaded, setModelLoaded] = useState(false);
   const [frequencies, setFrequencies] = useState([]);
   const [pitchfreq, setPitchFreq] = useState(0); // displays the frequency.
-  const [didFreqChange, setDidFChange] = useState(false);
-  const [isFreqNull, setIsFreqNull] = useState(true);
+  const [diff, setDiff] = useState(0);
+  // const [anim, setAnim] = useState(0)
 
   useEffect(() => {
     (async () => {
@@ -64,8 +111,6 @@ const TunerSimple = () => {
     })();
   }, []);
 
-
-
   useInterval(() => {
     if (!pitchDetectorRef.current) {
       return;
@@ -74,9 +119,13 @@ const TunerSimple = () => {
       if (frequencies.length < 10) {
         setFrequencies([...frequencies, detectedPitch]);
         setPitchFreq(detectedPitch);
+        setDiff(fToNote(detectedPitch))
+        // setAnim(fToNote(detectedPitch)*50)
       } else if (frequencies.length >= 10) {
         setFrequencies([...frequencies.slice(1), detectedPitch]);
         setPitchFreq(detectedPitch);
+        setDiff(fToNote(detectedPitch))
+        // setAnim(fToNote(detectedPitch)*50)
       }
     });
   }, 0);
@@ -86,21 +135,22 @@ const TunerSimple = () => {
     midis,
     10
   );
-  const confidence = (greatestFreq - 3) / Math.max(modalMisses, 1);
-
-
+  // const confidence = (greatestFreq - 3) / Math.max(modalMisses, 1);
+  
+console.log(pitchfreq)
   return (
     <div>
-      <h1>Note: {midiToNote(modalMidi)} </h1>
-      {/*<p>{freqToNote(frequencies)}</p>*/}
-      {/*<h2>Frequencies:</h2>*/}
-      {/*<code>{JSON.stringify(frequencies)}</code>*/}
-      {/*<p>{pitchfreq}</p>*/}
-      {/*<p>{midis}</p>*/}
-      <motion.div animate={{
-        y: -pitchfreq
-      }}>
-        <img className="animated-img" src={logo} alt="hi" />
+      <h1>Note: {freqToNote(pitchfreq)} </h1>
+      <p>freq:{pitchfreq}</p>
+      {/* <p>diff: {diffInNote(pitchfreq)}</p> */}
+      <p>semi - {diff}</p>
+      <motion.div
+        animate={{
+          y: -(10*Math.round(diff/10))*10, // grrr this isn't working. got it! Your diff func was returnig n/a, not null
+          // nevermind. still sooo sensitive
+        }}
+      >
+        <hr/>
       </motion.div>
     </div>
   );
