@@ -3,11 +3,11 @@ import ml5 from 'ml5';
 import { motion } from 'framer-motion';
 import useAudioContext from './use-audio-context';
 import useInterval from './use-interval';
-import logo from './logo.svg';
 import './App.css';
-import notes from './notes';
 // import scale2 from './scale2';
 
+const A = 440;
+const equalTemperment = 1.059463;
 const scale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 const scale2 = [
   'A',
@@ -24,7 +24,6 @@ const scale2 = [
   'G#',
 ];
 
-
 function freqToMidi(f) {
   if (!f) {
     return;
@@ -33,37 +32,48 @@ function freqToMidi(f) {
   return Math.round(12 * mathlog2) + 69;
 }
 
-// Calculate how many semitones freq is away from 440.
-function fToNote(f) {
-  let A = 440;
-  let i = 0;
-  let semiDiff = 0;
-  let note = scale2[i];
-  if (!f) {
+function ftoSemitoneDiff(freq) {
+  let diffInSemitones = 0;
+  if (!freq) {
     return null;
   }
-  semiDiff = Math.round(Math.log(f / A) / Math.log(1.059463)); 
-  if (semiDiff > 11) {
-    semiDiff = (semiDiff-12)
-  } else if (semiDiff < -12) {
-    semiDiff = (semiDiff + 12)
+  // See equations on figuring out equal temperment w/ the freqency you have.
+  // But we're rounding them b/c we need the semitone the frequency is closest to...
+  return (diffInSemitones = Math.round(
+    Math.log(freq / A) / Math.log(equalTemperment)
+  ));
+}
+
+function semiDifftoOutOfTune(freq, diffInSemitones) {
+  let diff = 0
+  // using the difference in semitones to figure out what the correctFreq should be,
+  // then getting difference
+  const correctFreq = A * Math.pow(equalTemperment, diffInSemitones);
+  diff = freq - correctFreq;
+  // set a max difference...
+  if (diff > 25) {
+    diff = 25
+  } else if (diff < -25) {
+    diff = -25
   }
-  if (semiDiff < 0) {
-    note = scale2[scale2.length + semiDiff]
+  return diff;
+}
+
+function semiDifftoNote(freq, diffInSemitones) {
+  let note = scale2[0];
+  if (diffInSemitones > 0) {
+    diffInSemitones = diffInSemitones % 12; // going back over array of scale if semitone above A
+    note = scale2[diffInSemitones];
+  } else if (diffInSemitones < 0) {
+    // same but if semitone below A
+    diffInSemitones = diffInSemitones % -12;
+    note = scale2[scale2.length + diffInSemitones];
   }
-    note = scale2[semiDiff]
-  let correctFreq = A * Math.pow(1.059463,semiDiff)
-  let diff = f - correctFreq
-  if (diff > 20 || diff < -20) {
-    return diff = 0
-  }
-  return diff
-  // can also return the note here too...
+  return note;
 }
 
 const midiToNote = (midiNum) => scale[midiNum % 12];
 const freqToNote = (frequency) => midiToNote(freqToMidi(frequency));
-
 
 const modeWithConfidence = (arr, limit) => {
   const numMapping = {};
@@ -119,16 +129,20 @@ const TunerSimple = (effect, deps) => {
       if (frequencies.length < 10) {
         setFrequencies([...frequencies, detectedPitch]);
         setPitchFreq(detectedPitch);
-        setDiff(fToNote(detectedPitch))
+        setDiff(
+          semiDifftoOutOfTune(detectedPitch, ftoSemitoneDiff(detectedPitch))
+        );
         // setAnim(fToNote(detectedPitch)*50)
       } else if (frequencies.length >= 10) {
         setFrequencies([...frequencies.slice(1), detectedPitch]);
         setPitchFreq(detectedPitch);
-        setDiff(fToNote(detectedPitch))
+        setDiff(
+          semiDifftoOutOfTune(detectedPitch, ftoSemitoneDiff(detectedPitch))
+        );
         // setAnim(fToNote(detectedPitch)*50)
       }
     });
-  }, 0);
+  }, 200);
 
   const midis = frequencies.map(freqToMidi).filter((midiNum) => !!midiNum);
   const { mode: modalMidi, greatestFreq, modalMisses } = modeWithConfidence(
@@ -136,21 +150,21 @@ const TunerSimple = (effect, deps) => {
     10
   );
   // const confidence = (greatestFreq - 3) / Math.max(modalMisses, 1);
-  
-console.log(pitchfreq)
+
   return (
     <div>
-      <h1>Note: {freqToNote(pitchfreq)} </h1>
+      <h1>Note from midi: {freqToNote(pitchfreq)} </h1>
+      <h2>My Notes: {semiDifftoNote(pitchfreq, ftoSemitoneDiff(pitchfreq))}</h2>
       <p>freq:{pitchfreq}</p>
       {/* <p>diff: {diffInNote(pitchfreq)}</p> */}
-      <p>semi - {diff}</p>
+      <p>semi {diff}</p>
       <motion.div
         animate={{
-          y: -(10*Math.round(diff/10))*10, // grrr this isn't working. got it! Your diff func was returnig n/a, not null
+          y: -diff * 15, // grrr this isn't working. got it! Your diff func was returnig n/a, not null
           // nevermind. still sooo sensitive
         }}
       >
-        <hr/>
+        <hr />
       </motion.div>
     </div>
   );
