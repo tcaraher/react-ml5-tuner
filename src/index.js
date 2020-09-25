@@ -1,13 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
-import TunerSimple from './Tuner-Simple';
+import Tuner from './Tuner';
 
 ReactDOM.render(
   <React.StrictMode>
-    <TunerSimple />
+    <Tuner />
   </React.StrictMode>,
   document.getElementById('root')
 );
