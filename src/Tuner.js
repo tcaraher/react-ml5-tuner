@@ -9,31 +9,32 @@ const A = 440;
 const equalTemperment = 1.059463;
 const scale = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
 
+// Convert frequency detected to the number of semitones away from A440
 function ftoSemitoneDiff(freq) {
   let diffInSemitones = 0;
   if (!freq) {
     return null;
   }
-  // See equations on figuring out equal temperment w/ the freqency you have.
-  // But we're rounding them b/c we need the semitone the frequency is closest to...
+  // See equation online on figuring out how many semitones away you are from 440hz
+  // But we're rounding them too b/c we need the semitone the frequency is closest to...
   return (diffInSemitones = Math.round(
     Math.log(freq / A) / Math.log(equalTemperment)
   ));
 }
 
+// Uses the difference in semitones to cacluate how out of tune you are in cents
 function semiDifftoCentsDiff(freq, diffInSemitones) {
-  // let freqDiff = 0
+  let centDiff = 0;
   if (!freq) {
     return null;
   }
-  let centDiff = 0;
-  // using the difference in semitones to figure out what the correctFreq should be,
-  // then getting difference
+  //Use the difference in semitones to figure out what the correctFreq should be. 
+  // It's the same equation to figure out the difference in semitone, just this time we're solving for the correct frequency, as we know the diffInSemis
   const correctFreq = A * Math.pow(equalTemperment, diffInSemitones);
-  // below is equation to conver diff in hz to cents. look it up...
+  // Below is equation to conver diff in hz to cents. look it up... 
   // We're rounding it off. too many decimals..
   centDiff = Math.round(1200 * Math.log2(freq / correctFreq));
-  // set a max difference...
+  // set a max difference??? not really needed
   // if (centDiff > 32) {
   //   centDiff = 32
   // } else if (centDiff < -32) {
@@ -83,7 +84,8 @@ const Tuner = (effect, deps) => {
       return;
     }
     pitchDetectorRef.current.getPitch((err, detectedPitch) => {
-      // Putting frequencies into an array for no real reason here.. Will use it later.
+      // Putting frequencies into an array for no real reason here yet. 
+      // Need to try to smooth out the responses and take out anomalies somehow so think it'll help in future.
       if (frequencies.length < 10) {
         setFrequencies([...frequencies, detectedPitch]);
         setPitchFreq(Math.round(detectedPitch * 10) / 10);
