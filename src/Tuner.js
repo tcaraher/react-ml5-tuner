@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import ml5 from "ml5";
+//import ml5 from "ml5";
 import { motion } from "framer-motion";
 import useAudioContext from "./use-audio-context";
 import useInterval from "./use-interval";
@@ -14,34 +14,16 @@ const Tuner = (effect, deps) => {
   const [diff, setDiff] = useState(0);
   const [note, setNote] = useState([]);
 
-  const A = 440;
+  const referenceNoteFrequency = 440;
   const equalTemperment = 1.059463;
-  const scale = [
-    "A",
-    "A#",
-    "B",
-    "C",
-    "C#",
-    "D",
-    "D#",
-    "E",
-    "F",
-    "F#",
-    "G",
-    "G#"
-  ];
+  const scale = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
 
-  // Convert frequency detected to the number of semitones away from A440
-  function getNumSemitonesFromA(freq) {
-    let diffInSemitones = 0;
-    if (!freq) {
-      return null;
-    }
+  // Convert frequency detected to the number of semitones away from 
+  function getNumberOfSemitonesFromReferenceNote(detectedFrequency, referenceNoteFrequency) {
     // See equation online on figuring out how many semitones away you are from 440hz
     // But we're rounding them too b/c we need the semitone the frequency is closest to...
-    return (diffInSemitones = Math.round(
-      Math.log(freq / A) / Math.log(equalTemperment)
-    ));
+    if (detectedFrequency) return (differenceInSemitones = Math.round(Math.log(detectedFrequency / referenceNoteFrequency) / Math.log(equalTemperment)));;
+    return null;
   }
 
   // Uses the difference in semitones to cacluate how out of tune you are in cents
@@ -60,7 +42,7 @@ const Tuner = (effect, deps) => {
     return centDiff;
   }
 
-  // Gets the note from how many semitones away you are from A440 (getNumSemitonesFromA)
+  // Gets the note from how many semitones away you are from A440 (getNumberOfSemitonesFromReferenceNote)
   function getNoteFromSemitones(freq, diffInSemitones) {
     let note = scale[0];
     if (diffInSemitones > 0) {
@@ -97,10 +79,10 @@ const Tuner = (effect, deps) => {
       return;
     }
     pitchDetectorRef.current.getPitch((err, detectedPitch) => {
-      setNote(getNoteFromSemitones(pitchfreq, getNumSemitonesFromA(pitchfreq)));
+      setNote(getNoteFromSemitones(pitchfreq, getNumberOfSemitonesFromReferenceNote(pitchfreq, referenceNoteFrequency)));
       setPitchFreq(Math.round(detectedPitch * 10) / 10);
       setDiff(
-        getDifferenceInCents(detectedPitch, getNumSemitonesFromA(detectedPitch))
+        getDifferenceInCents(detectedPitch, getNumberOfSemitonesFromReferenceNote(detectedPitch, referenceNoteFrequency))
       );
     });
   }, 1000 / 80);
