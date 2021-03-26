@@ -7,9 +7,9 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "framer-motion": "^2.7.1",
-    "ml5": "^0.5.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-helmet": "^6.1.0",
     "react-scripts": "3.4.3",
     "styled-components": "^5.2.1"
   },

@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import ml5 from "ml5";
-import { motion } from "framer-motion";
-import useAudioContext from "./use-audio-context";
-import useInterval from "./use-interval";
-import "./App.css";
+import React, { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import useAudioContext from './use-audio-context';
+import useInterval from './use-interval';
+import './App.css';
+import { Helmet } from 'react-helmet';
 
 const Tuner = (effect, deps) => {
   const pitchDetectorRef = useRef();
@@ -17,18 +17,18 @@ const Tuner = (effect, deps) => {
   const A = 440;
   const equalTemperment = 1.059463;
   const scale = [
-    "A",
-    "A#",
-    "B",
-    "C",
-    "C#",
-    "D",
-    "D#",
-    "E",
-    "F",
-    "F#",
-    "G",
-    "G#"
+    'A',
+    'A#',
+    'B',
+    'C',
+    'C#',
+    'D',
+    'D#',
+    'E',
+    'F',
+    'F#',
+    'G',
+    'G#',
   ];
 
   // Convert frequency detected to the number of semitones away from A440
@@ -75,19 +75,22 @@ const Tuner = (effect, deps) => {
   }
 
   useEffect(() => {
-    (async () => {
-      const micStream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: false
-      });
-      pitchDetectorRef.current = ml5.pitchDetection(
-        "/models/pitch-detection/crepe",
-        audioContextRef.current,
-        micStream,
-        () => setModelLoaded(true)
-      );
-    })();
-  }, [audioContextRef]);
+    if (tunerStarted) {
+      audioContextRef.current.resume();
+      (async () => {
+        const micStream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: false,
+        });
+        pitchDetectorRef.current = window.ml5.pitchDetection(
+          '/models/pitch-detection/crepe',
+          audioContextRef.current,
+          micStream,
+          () => setModelLoaded(true)
+        );
+      })();
+    }
+  }, [audioContextRef, tunerStarted]);
 
   useInterval(() => {
     if (!tunerStarted) {
@@ -105,10 +108,11 @@ const Tuner = (effect, deps) => {
     });
   }, 1000 / 80);
 
-
-
   return (
     <div>
+      <Helmet>
+        <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" />
+      </Helmet>
       <div className="note-freq">
         {modelLoaded && <h2>model loaded</h2>}
         <button
@@ -130,7 +134,7 @@ const Tuner = (effect, deps) => {
         <motion.hr
           className="diff-hr"
           animate={{
-            y: -diff * 3
+            y: -diff * 3,
           }}
         />
         <hr className="ref-hr" />
