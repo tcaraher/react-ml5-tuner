@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 
 export const TunerWrapper = styled.div `
   margin-top: 10rem;
@@ -21,15 +22,17 @@ export const AnimationWrapper = styled.div`
   padding: 2rem;
   .diff-hr {
     width: 700px;
+    height: 5px;
+    //background-color: #7db361;
     border: 5px solid #7db361;
-
+    border-radius: 25px;
   }
   .ref-hr {
     width: 200px;
   }
 `
 
-export const InfoDiv = styled.div `
+export const InfoDiv = styled(motion.div) `
   font-size: 2rem;
   border: 5px solid #7db361;
   border-radius: 25px;

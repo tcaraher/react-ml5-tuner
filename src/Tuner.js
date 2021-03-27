@@ -14,7 +14,7 @@ const Tuner = (effect, deps) => {
   const [pitchfreq, setPitchFreq] = useState(0);
   const [diff, setDiff] = useState(0);
   const [note, setNote] = useState(['A']);
-  const [color, setColor] = useState('green')
+  const [color, setColor] = useState('#7db361')
 
   const A = 440;
   const equalTemperment = 1.059463;
@@ -76,6 +76,18 @@ const Tuner = (effect, deps) => {
     return note;
   }
 
+  function chooseColorFromCents(diff) {
+    let color = "#7db361"
+    if (diff > 10 || diff < -10) {
+      color = "orange"
+    }
+    if (diff > 20 || diff < -20) {
+      color = "red"
+    }
+
+    return color
+  }
+
   useEffect(() => {
     if (tunerStarted) {
       audioContextRef.current.resume();
@@ -107,6 +119,7 @@ const Tuner = (effect, deps) => {
       setDiff(
         getDifferenceInCents(detectedPitch, getNumSemitonesFromA(detectedPitch))
       );
+      setColor(chooseColorFromCents(diff));
     });
   }, 1000 / 80);
 
@@ -127,14 +140,17 @@ const Tuner = (effect, deps) => {
           Stop
         </button>
       <AnimationWrapper>
-      <InfoDiv>
-        <h2>{note}</h2>
+      <InfoDiv
+      animate={{backgroundColor: color}}
+      >
+        <h2 >{note}</h2>
         <p>{diff}</p>
       </InfoDiv>
         <motion.hr
           className="diff-hr"
           animate={{
             y: -diff * 3,
+            backgroundColor: color,
           }}
         />
         {/*<hr className="ref-hr" />*/}
