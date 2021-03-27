@@ -4,6 +4,7 @@ import useAudioContext from './use-audio-context';
 import useInterval from './use-interval';
 import './App.css';
 import { Helmet } from 'react-helmet';
+import { AnimationWrapper, InfoDiv, TunerWrapper } from './tunerStyles';
 
 const Tuner = (effect, deps) => {
   const pitchDetectorRef = useRef();
@@ -12,7 +13,8 @@ const Tuner = (effect, deps) => {
   const [modelLoaded, setModelLoaded] = useState(false);
   const [pitchfreq, setPitchFreq] = useState(0);
   const [diff, setDiff] = useState(0);
-  const [note, setNote] = useState([]);
+  const [note, setNote] = useState(['A']);
+  const [color, setColor] = useState('green')
 
   const A = 440;
   const equalTemperment = 1.059463;
@@ -109,12 +111,11 @@ const Tuner = (effect, deps) => {
   }, 1000 / 80);
 
   return (
-    <div>
+    <TunerWrapper>
       <Helmet>
         <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" />
       </Helmet>
-      <div className="note-freq">
-        {modelLoaded && <h2>model loaded</h2>}
+        {/*{modelLoaded && <h2>model loaded</h2> || <h2>model loading</h2>}*/}
         <button
           type="button"
           disabled={tunerStarted}
@@ -125,21 +126,20 @@ const Tuner = (effect, deps) => {
         <button type="button" onClick={() => setTunerStarted(false)}>
           Stop
         </button>
-
-        <h2>Note: {note}</h2>
-        <p>freq: {pitchfreq} </p>
-        <p>cents: {diff}</p>
-      </div>
-      <div className="tuner-wrapper">
+      <AnimationWrapper>
+      <InfoDiv>
+        <h2>{note}</h2>
+        <p>{diff}</p>
+      </InfoDiv>
         <motion.hr
           className="diff-hr"
           animate={{
             y: -diff * 3,
           }}
         />
-        <hr className="ref-hr" />
-      </div>
-    </div>
+        {/*<hr className="ref-hr" />*/}
+      </AnimationWrapper>
+    </TunerWrapper>
   );
 };
 
