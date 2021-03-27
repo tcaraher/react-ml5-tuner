@@ -4,7 +4,7 @@ import useAudioContext from './use-audio-context';
 import useInterval from './use-interval';
 import './App.css';
 import { Helmet } from 'react-helmet';
-import { AnimationWrapper, InfoDiv, TunerWrapper } from './tunerStyles';
+import { AnimationWrapper, InfoDiv, StartButton, TunerWrapper } from './tunerStyles';
 
 const Tuner = (effect, deps) => {
   const pitchDetectorRef = useRef();
@@ -14,7 +14,7 @@ const Tuner = (effect, deps) => {
   const [pitchfreq, setPitchFreq] = useState(0);
   const [diff, setDiff] = useState(0);
   const [note, setNote] = useState(['A']);
-  const [color, setColor] = useState('#7db361')
+  const [color, setColor] = useState('#7db361');
 
   const A = 440;
   const equalTemperment = 1.059463;
@@ -77,15 +77,15 @@ const Tuner = (effect, deps) => {
   }
 
   function chooseColorFromCents(diff) {
-    let color = "#7db361"
+    let color = '#7db361';
     if (diff > 10 || diff < -10) {
-      color = "orange"
+      color = 'orange';
     }
     if (diff > 20 || diff < -20) {
-      color = "red"
+      color = 'red';
     }
 
-    return color
+    return color;
   }
 
   useEffect(() => {
@@ -128,32 +128,26 @@ const Tuner = (effect, deps) => {
       <Helmet>
         <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" />
       </Helmet>
-        {/*{modelLoaded && <h2>model loaded</h2> || <h2>model loading</h2>}*/}
-        <button
-          type="button"
-          disabled={tunerStarted}
-          onClick={() => setTunerStarted(true)}
-        >
-          Start
-        </button>
-        <button type="button" onClick={() => setTunerStarted(false)}>
-          Stop
-        </button>
-      <AnimationWrapper>
-      <InfoDiv
-      animate={{backgroundColor: color}}
+      {/*{modelLoaded && <h2>model loaded</h2> || <h2>model loading</h2>}*/}
+      <StartButton
+        type="button"
+        onClick={() => setTunerStarted(!tunerStarted)}
       >
-        <h2 >{note}</h2>
-        <p>{diff}</p>
-      </InfoDiv>
+        {tunerStarted && <p>Stop!</p> || <p>Start!</p> }
+      </StartButton>
+      <AnimationWrapper>
+        <InfoDiv animate={{ backgroundColor: color }}>
+          <h2>{note}</h2>
+          <p>{diff}</p>
+        </InfoDiv>
         <motion.hr
           className="diff-hr"
           animate={{
             y: -diff * 3,
             backgroundColor: color,
+            border: color,
           }}
         />
-        {/*<hr className="ref-hr" />*/}
       </AnimationWrapper>
     </TunerWrapper>
   );
