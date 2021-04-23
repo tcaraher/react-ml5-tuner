@@ -4,9 +4,17 @@ import useAudioContext from './use-audio-context';
 import useInterval from './use-interval';
 import './App.css';
 import { Helmet } from 'react-helmet';
-import { AnimationWrapper, InfoDiv, StartButton, TunerWrapper } from './tunerStyles';
+import {
+  AnimationWrapper,
+  InfoDiv,
+  StartButton,
+  TunerWrapper,
+} from './tunerStyles';
+import AudioDataContainer from "./audio-visualization-fft/AudioDataContainer"
+
 
 const Tuner = (effect, deps) => {
+  const audioStream = useRef();
   const pitchDetectorRef = useRef();
   const audioContextRef = useAudioContext();
   const [tunerStarted, setTunerStarted] = useState(false);
@@ -102,6 +110,7 @@ const Tuner = (effect, deps) => {
           micStream,
           () => setModelLoaded(true)
         );
+        audioStream.current = micStream;
       })();
     }
   }, [audioContextRef, tunerStarted]);
@@ -129,11 +138,8 @@ const Tuner = (effect, deps) => {
         <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" />
       </Helmet>
       {/*{modelLoaded && <h2>model loaded</h2> || <h2>model loading</h2>}*/}
-      <StartButton
-        type="button"
-        onClick={() => setTunerStarted(!tunerStarted)}
-      >
-        {tunerStarted && <p>Stop!</p> || <p>Start!</p> }
+      <StartButton type="button" onClick={() => setTunerStarted(!tunerStarted)}>
+        {(tunerStarted && <p>Stop!</p>) || <p>Start!</p>}
       </StartButton>
       <AnimationWrapper>
         <InfoDiv animate={{ backgroundColor: color }}>
@@ -149,6 +155,9 @@ const Tuner = (effect, deps) => {
           }}
         />
       </AnimationWrapper>
+      {/* {tunerStarted ? <AudioAnalyser audio={audioStream} /> : ''} */}
+      {/* <AnalyserApp /> */}
+      <AudioDataContainer audioStream={audioStream.current} tunerStarted= {tunerStarted}/>
     </TunerWrapper>
   );
 };
