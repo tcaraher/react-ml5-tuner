@@ -23,6 +23,8 @@ const Tuner = (effect, deps) => {
   const [diff, setDiff] = useState(0);
   const [note, setNote] = useState(['A']);
   const [color, setColor] = useState('#7db361');
+  const [visualStarted, setVisualStarted] = useState(false);
+
 
   const A = 440;
   const equalTemperment = 1.059463;
@@ -87,10 +89,10 @@ const Tuner = (effect, deps) => {
   function chooseColorFromCents(diff) {
     let color = '#7db361';
     if (diff > 10 || diff < -10) {
-      color = 'orange';
+      color = '#ffa500';
     }
     if (diff > 20 || diff < -20) {
-      color = 'red';
+      color = '#ff0000';
     }
 
     return color;
@@ -122,6 +124,7 @@ const Tuner = (effect, deps) => {
     if (!pitchDetectorRef.current) {
       return;
     }
+    setVisualStarted(true);
     pitchDetectorRef.current.getPitch((err, detectedPitch) => {
       setNote(getNoteFromSemitones(pitchfreq, getNumSemitonesFromA(pitchfreq)));
       setPitchFreq(Math.round(detectedPitch * 10) / 10);
@@ -157,7 +160,7 @@ const Tuner = (effect, deps) => {
       </AnimationWrapper>
       {/* {tunerStarted ? <AudioAnalyser audio={audioStream} /> : ''} */}
       {/* <AnalyserApp /> */}
-      <AudioDataContainer audioStream={audioStream.current} tunerStarted= {tunerStarted}/>
+      <AudioDataContainer audioStream={audioStream.current} visualStarted={visualStarted} tunerStarted={tunerStarted}/>
     </TunerWrapper>
   );
 };

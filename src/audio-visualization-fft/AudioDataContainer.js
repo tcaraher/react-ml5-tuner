@@ -25,6 +25,12 @@ class AudioDataContainer extends React.Component {
       })
   }
 
+  // stopAnalyser = (source) => {
+  //   if (!this.props.visualStarted){
+  //     source.stop()
+  //   }
+  // }
+
   getFrequencyData = (styleAdjuster) => {
     const bufferLength = this.state.audioData.frequencyBinCount;
     const amplitudeArray = new Uint8Array(bufferLength);
@@ -41,6 +47,8 @@ class AudioDataContainer extends React.Component {
           frequencyBandArray={this.frequencyBandArray}
           getFrequencyData={this.getFrequencyData}
           audioData={this.state.audioData}
+          visualStarted={this.props.visualStarted}
+          stopAnalyser={this.stop}
         />
       </div>
     );
