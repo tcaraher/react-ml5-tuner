@@ -1,17 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
-import useAudioContext from './use-audio-context';
-import useInterval from './use-interval';
-import './App.css';
-import { Helmet } from 'react-helmet';
+import React, { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import useAudioContext from "./use-audio-context";
+import useInterval from "./use-interval";
+import "./App.css";
+import { Helmet } from "react-helmet";
 import {
   AnimationWrapper,
   InfoDiv,
   StartButton,
   TunerWrapper,
-} from './tunerStyles';
-import AudioDataContainer from "./audio-visualization-fft/AudioDataContainer"
-
+} from "./tunerStyles";
+import AudioDataContainer from "./audio-visualization-fft/AudioDataContainer";
 
 const Tuner = (effect, deps) => {
   const audioStream = useRef();
@@ -21,26 +20,25 @@ const Tuner = (effect, deps) => {
   const [modelLoaded, setModelLoaded] = useState(false);
   const [pitchfreq, setPitchFreq] = useState(0);
   const [diff, setDiff] = useState(0);
-  const [note, setNote] = useState(['A']);
-  const [color, setColor] = useState('#7db361');
+  const [note, setNote] = useState(["A"]);
+  const [color, setColor] = useState("#7db361");
   const [visualStarted, setVisualStarted] = useState(false);
-
 
   const A = 440;
   const equalTemperment = 1.059463;
   const scale = [
-    'A',
-    'A#',
-    'B',
-    'C',
-    'C#',
-    'D',
-    'D#',
-    'E',
-    'F',
-    'F#',
-    'G',
-    'G#',
+    "A",
+    "A#",
+    "B",
+    "C",
+    "C#",
+    "D",
+    "D#",
+    "E",
+    "F",
+    "F#",
+    "G",
+    "G#",
   ];
 
   // Convert frequency detected to the number of semitones away from A440
@@ -87,12 +85,12 @@ const Tuner = (effect, deps) => {
   }
 
   function chooseColorFromCents(diff) {
-    let color = '#7db361';
+    let color = "#7db361";
     if (diff > 10 || diff < -10) {
-      color = '#ffa500';
+      color = "#ffa500";
     }
     if (diff > 20 || diff < -20) {
-      color = '#ff0000';
+      color = "#ff";
     }
 
     return color;
@@ -107,7 +105,7 @@ const Tuner = (effect, deps) => {
           video: false,
         });
         pitchDetectorRef.current = window.ml5.pitchDetection(
-          '/models/pitch-detection/crepe',
+          "/models/pitch-detection/crepe",
           audioContextRef.current,
           micStream,
           () => setModelLoaded(true)
@@ -115,6 +113,7 @@ const Tuner = (effect, deps) => {
         audioStream.current = micStream;
       })();
     }
+    audioContextRef.current.suspend();
   }, [audioContextRef, tunerStarted]);
 
   useInterval(() => {
@@ -158,9 +157,11 @@ const Tuner = (effect, deps) => {
           }}
         />
       </AnimationWrapper>
-      {/* {tunerStarted ? <AudioAnalyser audio={audioStream} /> : ''} */}
-      {/* <AnalyserApp /> */}
-      <AudioDataContainer audioStream={audioStream.current} visualStarted={visualStarted} tunerStarted={tunerStarted}/>
+      <AudioDataContainer
+        audioStream={audioStream.current}
+        visualStarted={visualStarted}
+        audioContext={audioContextRef}
+      />
     </TunerWrapper>
   );
 };
