@@ -10,7 +10,7 @@ import {
   StartButton,
   TunerWrapper,
 } from "./tunerStyles";
-import AudioDataContainer from "./audio-visualization-fft/AudioDataContainer";
+import Visualiser from "./Visualiser";
 
 const Tuner = (effect, deps) => {
   const audioStream = useRef();
@@ -90,9 +90,8 @@ const Tuner = (effect, deps) => {
       color = "#ffa500";
     }
     if (diff > 20 || diff < -20) {
-      color = "#ff";
+      color = "#c5001b";
     }
-
     return color;
   }
 
@@ -157,10 +156,16 @@ const Tuner = (effect, deps) => {
           }}
         />
       </AnimationWrapper>
-      <AudioDataContainer
-        audioStream={audioStream.current}
+      {/*<AudioDataContainer*/}
+      {/*  audioStream={audioStream.current}*/}
+      {/*  visualStarted={visualStarted}*/}
+      {/*  audioContext={audioContextRef}*/}
+      {/*/>*/}
+      <Visualiser
+        color={color}
+        audioContext={audioContextRef.current}
         visualStarted={visualStarted}
-        audioContext={audioContextRef}
+        audioStream={audioStream.current}
       />
     </TunerWrapper>
   );
