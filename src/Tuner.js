@@ -4,6 +4,7 @@ import useAudioContext from "./use-audio-context";
 import useInterval from "./use-interval";
 import "./App.css";
 import { Helmet } from "react-helmet";
+import {css} from 'styled-components';
 import {
   AnimationWrapper,
   InfoDiv,
@@ -11,7 +12,6 @@ import {
   TunerWrapper,
 } from "./tunerStyles";
 import Visualiser from "./Visualiser";
-
 const Tuner = (effect, deps) => {
   const audioStream = useRef();
   const pitchDetectorRef = useRef();
@@ -151,11 +151,12 @@ const Tuner = (effect, deps) => {
           className="diff-hr"
           animate={{
             // y: `${-diff/6}rem`,
-            y: -diff * 2.5,
+            y: -diff * 4.7,
             backgroundColor: color,
             border: color,
           }}
         />
+        <h2 className="small-note">{note}</h2>
       </AnimationWrapper>
       {/*<AudioDataContainer*/}
       {/*  audioStream={audioStream.current}*/}

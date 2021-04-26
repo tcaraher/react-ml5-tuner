@@ -15,6 +15,7 @@ export const TunerWrapper = styled.div `
 `
 
 export const AnimationWrapper = styled.div`
+  background-image: url("/tunergrid.svg");
   display: flex;
   justify-content: center;
   align-items: center;
@@ -23,16 +24,24 @@ export const AnimationWrapper = styled.div`
   margin: auto;
   border: 5px solid gray;
   border-radius: 25px;
-  padding: 2rem;
+  padding: 1.6rem 1.2rem 1.6rem 1.6rem;
   .diff-hr {
     width: 700px;
     height: 5px;
     //background-color: #7db361;
     //border: 5px solid #7db361;
     border-radius: 25px;
+    margin-bottom: 45px;
+    margin-right: 20px;
   }
   .ref-hr {
     width: 200px;
+  }
+  .small-note {
+    margin-top: 20px;
+    padding-left: 30px;
+    text-align: right;
+    
   }
 `
 
@@ -48,6 +57,7 @@ export const InfoDiv = styled(motion.div) `
   flex-direction: column;
   height: 10rem;
   width: 10rem;
+  margin-bottom: 40px;
 `
 
 export const StartButton = styled.div `
