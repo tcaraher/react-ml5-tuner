@@ -150,7 +150,8 @@ const Tuner = (effect, deps) => {
         <motion.hr
           className="diff-hr"
           animate={{
-            y: -diff * 3,
+            // y: `${-diff/6}rem`,
+            y: -diff * 2.5,
             backgroundColor: color,
             border: color,
           }}

@@ -2,11 +2,11 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 export const TunerWrapper = styled.div `
-  border: 5px solid gray;
-  width: 80%;
+  //border: 5px solid gray;
+  width: 1300px;
   border-radius: 25px;
-  margin: 10rem auto;
-  margin-top: 10rem;
+  //padding-top: 1rem;
+  margin: 8rem auto;
   display: flex;
   flex-direction: column;
   button,h2 {
@@ -18,8 +18,8 @@ export const AnimationWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 500px;
-  width: 800px;
+  height: 400px;
+  width: 900px;
   margin: auto;
   border: 5px solid gray;
   border-radius: 25px;
@@ -46,19 +46,19 @@ export const InfoDiv = styled(motion.div) `
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 150px;
-  width: 150px;
+  height: 10rem;
+  width: 10rem;
 `
 
 export const StartButton = styled.div `
   width: 80px;
   text-align: center;
   font-size: 1.5rem;
-  margin: 2rem auto;
+  margin: 2rem auto 9rem;
   border: none;
   background: #404040;
   color: #ffffff;
-  padding: 20px;
+  padding: 0.3rem 2.5rem;
   text-transform: uppercase;
   border-radius: 6px;
   display: inline-block;

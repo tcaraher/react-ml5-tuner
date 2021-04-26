@@ -91,7 +91,7 @@ const Visualiser = ({ audioContext, visualStarted, audioStream, diff }) => {
       domElements[num].style.backgroundColor = `rgb(${visualiserColor}, ${
         255 - visualiserColor
       }, ${amplitudeValues.current[num] - 100})`;
-      domElements[num].style.height = `${amplitudeValues.current[num]}px`;
+      domElements[num].style.height = `${amplitudeValues.current[num]-20}px`;
       // setHeight(amplitudeValues.current[frequencyBandArray[i]]);
       // heightRef.current = amplitudeValues.current[frequencyBandArray[i]]
     }
@@ -137,16 +137,17 @@ const VisualWrapper = styled.div`
     border: none;
     background-color: green;
   }
-  height: 10rem;
+  height: 3rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding-top: 20rem;
+  padding-top: 17rem;
 
   .frequencyBands {
-    padding: 12px;
-    margin: 8px;
+    padding: 0.7rem;
+    margin: 0.5rem;
     transform: rotatex(180deg);
     transform-origin: top;
+    height: 1rem;
   }
 `;
