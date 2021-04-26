@@ -21,7 +21,7 @@ const Tuner = (effect, deps) => {
   const [pitchfreq, setPitchFreq] = useState(0);
   const [diff, setDiff] = useState(0);
   const [note, setNote] = useState(["A"]);
-  const [color, setColor] = useState("#7db361");
+  const [color, setColor] = useState("#74c748");
   const [visualStarted, setVisualStarted] = useState(false);
 
   const A = 440;
@@ -85,7 +85,7 @@ const Tuner = (effect, deps) => {
   }
 
   function chooseColorFromCents(diff) {
-    let color = "#7db361";
+    let color = "#74c748";
     if (diff > 10 || diff < -10) {
       color = "#ffa500";
     }
@@ -162,7 +162,7 @@ const Tuner = (effect, deps) => {
       {/*  audioContext={audioContextRef}*/}
       {/*/>*/}
       <Visualiser
-        color={color}
+        diff={diff}
         audioContext={audioContextRef.current}
         visualStarted={visualStarted}
         audioStream={audioStream.current}

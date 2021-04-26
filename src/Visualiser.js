@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import styled from "styled-components";
-import { motion } from "framer-motion";
 import useInterval from "./use-interval";
 
-const Visualiser = ({ audioContext, visualStarted, audioStream, color }) => {
+const Visualiser = ({ audioContext, visualStarted, audioStream, diff }) => {
   const amplitudeValues = useRef(null);
   const [audioData, setAudioData] = useState();
   const [frequencyBandArray, setFrequencyBandArray] = useState([
@@ -12,8 +11,10 @@ const Visualiser = ({ audioContext, visualStarted, audioStream, color }) => {
   ]);
   const sourceRef = useRef();
   const [analyserLoaded, setAnalyserLoaded] = useState(false);
+  const [visualiserColor, setVisualiserColor] = useState();
   // const [heightValue, setHeight] = useState([]);
   // const heightRef = useRef(null);
+  // const [arrayLength, setArrayLength] = useState(15);
 
   useEffect(() => {
     if (!visualStarted) {
@@ -28,8 +29,7 @@ const Visualiser = ({ audioContext, visualStarted, audioStream, color }) => {
     setAnalyserLoaded(true);
   }, [visualStarted]);
 
-
-//Below is option not to use useInterval, but requestAnimationFrame instead.
+  //Below is option not to use useInterval, but requestAnimationFrame instead.
 
   // useEffect(() => {
   //   if (!analyserLoaded) {
@@ -66,7 +66,6 @@ const Visualiser = ({ audioContext, visualStarted, audioStream, color }) => {
   //   }
   // };
 
-
   useInterval(() => {
     if (!analyserLoaded) {
       return;
@@ -75,30 +74,41 @@ const Visualiser = ({ audioContext, visualStarted, audioStream, color }) => {
     const amplitudeArray = new Uint8Array(bufferLength);
     audioData.getByteFrequencyData(amplitudeArray);
     amplitudeValues.current = amplitudeArray;
+
+    //Set visualiser colors based on intonation difference
+    setVisualiserColor(() => {
+      let color = 0;
+      if (diff < 0){
+        color = diff*-10
+      } else color= diff*10;
+      return color;
+    });
     let domElements = frequencyBandArray.map((num) =>
       document.getElementById(num)
     );
     for (let i = 0; i < frequencyBandArray.length; i++) {
       let num = frequencyBandArray[i];
-      domElements[
-        num
-        ].style.backgroundColor = `rgb(0, 255, ${amplitudeValues.current[num]})`;
+      domElements[num].style.backgroundColor = `rgb(${visualiserColor}, ${
+        255 - visualiserColor
+      }, ${amplitudeValues.current[num] - 100})`;
       domElements[num].style.height = `${amplitudeValues.current[num]}px`;
       // setHeight(amplitudeValues.current[frequencyBandArray[i]]);
+      // heightRef.current = amplitudeValues.current[frequencyBandArray[i]]
     }
+    // setArrayLength(frequencyBandArray.length)
   }, 0.1);
 
   return (
     <>
       {/*<VisualWrapper>*/}
-      {/*  {frequencyBandArray.map((i) => (*/}
+      {/*  {Array.from({arrayLength}).map((_,i)=>(*/}
       {/*    <motion.hr*/}
       {/*      className={"frequencyBands"}*/}
       {/*      initial={{*/}
       {/*        height: "10px"*/}
       {/*      }}*/}
       {/*      animate={{*/}
-      {/*        height: heightValue[i],*/}
+      {/*        height: heightRef.current*/}
       {/*        // backgroundColor: `rgba(0,255,${heightRef.current},1)`,*/}
       {/*      }}*/}
       {/*      id={i}*/}
@@ -127,11 +137,11 @@ const VisualWrapper = styled.div`
     border: none;
     background-color: green;
   }
-
+  height: 10rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding-top: 25%;
+  padding-top: 20rem;
 
   .frequencyBands {
     padding: 12px;

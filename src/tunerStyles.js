@@ -2,6 +2,10 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 export const TunerWrapper = styled.div `
+  border: 5px solid gray;
+  width: 80%;
+  border-radius: 25px;
+  margin: 10rem auto;
   margin-top: 10rem;
   display: flex;
   flex-direction: column;
