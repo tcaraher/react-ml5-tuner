@@ -4,7 +4,7 @@ import useAudioContext from "./use-audio-context";
 import useInterval from "./use-interval";
 import "./App.css";
 import { Helmet } from "react-helmet";
-import {css} from 'styled-components';
+import { css } from "styled-components";
 import {
   AnimationWrapper,
   InfoDiv,
@@ -12,10 +12,12 @@ import {
   TunerWrapper,
 } from "./tunerStyles";
 import Visualiser from "./Visualiser";
+
+
+
 const Tuner = (effect, deps) => {
   const audioStream = useRef();
   const pitchDetectorRef = useRef();
-  const audioContextRef = useAudioContext();
   const [tunerStarted, setTunerStarted] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
   const [pitchfreq, setPitchFreq] = useState(0);
@@ -23,7 +25,10 @@ const Tuner = (effect, deps) => {
   const [note, setNote] = useState(["A"]);
   const [color, setColor] = useState("#74c748");
   const [visualStarted, setVisualStarted] = useState(false);
+  const audioContextRef = useAudioContext();
 
+  const modelURL =
+    "https://github.com/ml5js/ml5-data-and-models/tree/master/models/pitch-detection/crepe/";
   const A = 440;
   const equalTemperment = 1.059463;
   const scale = [
@@ -98,13 +103,14 @@ const Tuner = (effect, deps) => {
   useEffect(() => {
     if (tunerStarted) {
       audioContextRef.current.resume();
+      console.log(audioContextRef.current.state);
       (async () => {
         const micStream = await navigator.mediaDevices.getUserMedia({
           audio: true,
           video: false,
         });
         pitchDetectorRef.current = window.ml5.pitchDetection(
-          "/models/pitch-detection/crepe",
+          "/crepe",
           audioContextRef.current,
           micStream,
           () => setModelLoaded(true)
@@ -138,6 +144,17 @@ const Tuner = (effect, deps) => {
       <Helmet>
         <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" />
       </Helmet>
+      {/*<ProMetronome*/}
+      {/*  bpm={95}*/}
+      {/*  subdivision={2}*/}
+      {/*  soundEnabled={true}*/}
+      {/*  soundPattern="31313131"*/}
+      {/*  render={(props, state) => (*/}
+      {/*    <div>*/}
+      {/*      {state.qNote}/{state.subNote}*/}
+      {/*    </div>*/}
+      {/*  )}*/}
+      {/*/>*/}
       {/*{modelLoaded && <h2>model loaded</h2> || <h2>model loading</h2>}*/}
       <StartButton type="button" onClick={() => setTunerStarted(!tunerStarted)}>
         {(tunerStarted && <p>Stop!</p>) || <p>Start!</p>}
@@ -150,10 +167,8 @@ const Tuner = (effect, deps) => {
         <motion.hr
           className="diff-hr"
           animate={{
-            // y: `${-diff/6}rem`,
             y: -diff * 4.7,
             backgroundColor: color,
-            border: color,
           }}
         />
         <h2 className="small-note">{note}</h2>
