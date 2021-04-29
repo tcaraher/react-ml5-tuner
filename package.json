@@ -14,7 +14,8 @@
     "react-dom": "^16.13.1",
     "react-helmet": "^6.1.0",
     "react-scripts": "3.4.3",
-    "styled-components": "^5.2.1"
+    "styled-components": "^5.2.1",
+    "tone": "^14.7.77"
   },
   "scripts": {
     "start": "react-scripts start",
