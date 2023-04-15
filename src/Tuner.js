@@ -4,7 +4,6 @@ import useAudioContext from "./use-audio-context";
 import useInterval from "./use-interval";
 import "./App.css";
 import { Helmet } from "react-helmet";
-import { css } from "styled-components";
 import {
   AnimationWrapper,
   InfoDiv,
@@ -27,8 +26,7 @@ const Tuner = (effect, deps) => {
   const [visualStarted, setVisualStarted] = useState(false);
   const audioContextRef = useAudioContext();
 
-  const modelURL =
-    "https://github.com/ml5js/ml5-data-and-models/tree/master/models/pitch-detection/crepe/";
+
   const A = 440;
   const equalTemperment = 1.059463;
   const scale = [
