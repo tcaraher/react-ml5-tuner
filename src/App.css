@@ -1,36 +1,40 @@
-.App {
-  text-align: center;
+/*.App {*/
+/*  text-align: center;*/
+/*}*/
+body {
+  background: #1d1b1b;
+  color: white;
 }
 
-.tuner-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 300px;
-  width: 500px;
-  margin: auto;
-  border: solid;
-}
+/*.tuner-wrapper {*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*  height: 300px;*/
+/*  width: 500px;*/
+/*  margin: auto;*/
+/*  border: solid;*/
+/*}*/
 
-.diff-hr {
-  width: 400px;
-}
+/*.diff-hr {*/
+/*  width: 400px;*/
+/*}*/
 
-.ref-hr {
-  border: 15px solid green;
-  width: 200px;
-}
+/*.ref-hr {*/
+/*  border: 15px solid green;*/
+/*  width: 200px;*/
+/*}*/
 
-.note-freq {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  height: 400px;
-}
+/*.note-freq {*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*  flex-direction: column;*/
+/*  height: 400px;*/
+/*}*/
 
-p {
-  height: 20px;
-  width: 100px;
-  padding: 10px;
-}
+/*p {*/
+/*  height: 20px;*/
+/*  width: 100px;*/
+/*  padding: 10px;*/
+/*}*/
