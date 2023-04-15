@@ -12,7 +12,6 @@ import {
   TunerWrapper,
 } from "./tunerStyles";
 import Visualiser from "./Visualiser";
-import Metronome from './metronome';
 
 
 
@@ -145,7 +144,6 @@ const Tuner = (effect, deps) => {
       <Helmet>
         <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" />
       </Helmet>
-      <Metronome/>
       <StartButton type="button" onClick={() => setTunerStarted(!tunerStarted)}>
         {(tunerStarted && <p>Stop!</p>) || <p>Start!</p>}
       </StartButton>

@@ -19,20 +19,22 @@ export const AnimationWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 400px;
-  width: 900px;
+  height: 397px;
+  width: 896px;
   margin: auto;
   border: 5px solid gray;
   border-radius: 25px;
-  padding: 1.6rem 1.2rem 1.6rem 1.6rem;
+  padding: 1.6rem 1.2rem 0 1.6rem;
   .diff-hr {
     width: 700px;
     height: 5px;
     //background-color: #7db361;
     //border: 5px solid #7db361;
     border-radius: 25px;
-    margin-bottom: 45px;
-    margin-right: 20px;
+    margin: 0 20px 32px 10px;
+    //margin-bottom: 41px;
+    //margin-right: 20px;
+    //margin-left: 10px;
   }
   .ref-hr {
     width: 200px;
