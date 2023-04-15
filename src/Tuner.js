@@ -99,8 +99,6 @@ const Tuner = (effect, deps) => {
   }
 
   useEffect(() => {
-    if (tunerStarted) {
-      audioContextRef.current.resume();
       console.log(audioContextRef.current.state);
       (async () => {
         const micStream = await navigator.mediaDevices.getUserMedia({
@@ -115,9 +113,7 @@ const Tuner = (effect, deps) => {
         );
         audioStream.current = micStream;
       })();
-    }
-    audioContextRef.current.suspend();
-  }, [audioContextRef, tunerStarted]);
+  }, [audioContextRef]);
 
   useInterval(() => {
     if (!tunerStarted) {
@@ -137,12 +133,17 @@ const Tuner = (effect, deps) => {
     });
   }, 1000 / 80);
 
+  function startTuner () {
+    audioContextRef.current.resume();
+    setTunerStarted(!tunerStarted)
+    console.log(tunerStarted)
+  }
   return (
     <TunerWrapper>
       <Helmet>
         <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" />
       </Helmet>
-      <StartButton type="button" onClick={() => setTunerStarted(!tunerStarted)}>
+      <StartButton type="button" onClick={() => startTuner()}>
         {(tunerStarted && <p>Stop!</p>) || <p>Start!</p>}
       </StartButton>
       <AnimationWrapper>
