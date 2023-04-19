@@ -76,8 +76,7 @@ const Tuner = (effect, deps) => {
     const scaleSize = scale.length;
     const normalizedDiff =
       ((diffInSemitones % scaleSize) + scaleSize) % scaleSize;
-    setNoteFromArray(scale[normalizedDiff]);
-    return noteFromArray;
+    return scale[normalizedDiff]
   }
 
   function chooseColorFromCents(diff) {
