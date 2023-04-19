@@ -6,7 +6,7 @@ export const TunerWrapper = styled.div `
   width: 1300px;
   border-radius: 25px;
   //padding-top: 1rem;
-  margin: 8rem auto;
+  margin: auto;
   display: flex;
   flex-direction: column;
   button,h2 {
@@ -66,7 +66,7 @@ export const StartButton = styled.div `
   width: 80px;
   text-align: center;
   font-size: 1.5rem;
-  margin: 2rem auto 9rem;
+  margin: 3rem auto;
   border: none;
   background: #404040;
   color: #ffffff;
