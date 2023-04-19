@@ -99,7 +99,6 @@ const Tuner = (effect, deps) => {
   }
 
   useEffect(() => {
-      console.log(audioContextRef.current.state);
       (async () => {
         const micStream = await navigator.mediaDevices.getUserMedia({
           audio: true,
@@ -113,7 +112,7 @@ const Tuner = (effect, deps) => {
         );
         audioStream.current = micStream;
       })();
-  }, [audioContextRef]);
+  }, [tunerStarted]);
 
   useInterval(() => {
     if (!tunerStarted) {
@@ -134,9 +133,17 @@ const Tuner = (effect, deps) => {
   }, 1000 / 80);
 
   function startTuner () {
-    audioContextRef.current.resume();
+    if (tunerStarted == true){
+      // console.log(audioContextRef.current.state);
+      audioContextRef.current.suspend();
+      // console.log(tunerStarted)
+    }
+    else if (tunerStarted == false) {
+      // console.log(audioContextRef.current.state);
+      audioContextRef.current.resume();
+      // console.log(tunerStarted)
+    }
     setTunerStarted(!tunerStarted)
-    console.log(tunerStarted)
   }
   return (
     <TunerWrapper>
@@ -160,11 +167,6 @@ const Tuner = (effect, deps) => {
         />
         <h2 className="small-note">{note}</h2>
       </AnimationWrapper>
-      {/*<AudioDataContainer*/}
-      {/*  audioStream={audioStream.current}*/}
-      {/*  visualStarted={visualStarted}*/}
-      {/*  audioContext={audioContextRef}*/}
-      {/*/>*/}
       <Visualiser
         diff={diff}
         audioContext={audioContextRef.current}
