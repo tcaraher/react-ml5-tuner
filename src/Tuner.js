@@ -12,8 +12,6 @@ import {
 } from "./tunerStyles";
 import Visualiser from "./Visualiser";
 
-
-
 const Tuner = (effect, deps) => {
   const audioStream = useRef();
   const pitchDetectorRef = useRef();
@@ -21,11 +19,11 @@ const Tuner = (effect, deps) => {
   const [modelLoaded, setModelLoaded] = useState(false);
   const [pitchfreq, setPitchFreq] = useState(0);
   const [diff, setDiff] = useState(0);
-  const [note, setNote] = useState(["A"]);
+  const [note, setNote] = useState("A");
   const [color, setColor] = useState("#74c748");
   const [visualStarted, setVisualStarted] = useState(false);
+  const [noteFromArray, setNoteFromArray] = useState("");
   const audioContextRef = useAudioContext();
-
 
   const A = 440;
   const equalTemperment = 1.059463;
@@ -75,16 +73,11 @@ const Tuner = (effect, deps) => {
 
   // Gets the note from how many semitones away you are from A440 (getNumSemitonesFromA)
   function getNoteFromSemitones(freq, diffInSemitones) {
-    let note = scale[0];
-    if (diffInSemitones > 0) {
-      diffInSemitones = diffInSemitones % 12; // going back over array of scale if semitone above A
-      note = scale[diffInSemitones];
-    } else if (diffInSemitones < 0) {
-      // same but if semitone below A
-      diffInSemitones = diffInSemitones % -12;
-      note = scale[scale.length + diffInSemitones];
-    }
-    return note;
+    const scaleSize = scale.length;
+    const normalizedDiff =
+      ((diffInSemitones % scaleSize) + scaleSize) % scaleSize;
+    setNoteFromArray(scale[normalizedDiff]);
+    return noteFromArray;
   }
 
   function chooseColorFromCents(diff) {
@@ -99,19 +92,19 @@ const Tuner = (effect, deps) => {
   }
 
   useEffect(() => {
-      (async () => {
-        const micStream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: false,
-        });
-        pitchDetectorRef.current = window.ml5.pitchDetection(
-          "/crepe",
-          audioContextRef.current,
-          micStream,
-          () => setModelLoaded(true)
-        );
-        audioStream.current = micStream;
-      })();
+    (async () => {
+      const micStream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: false,
+      });
+      pitchDetectorRef.current = window.ml5.pitchDetection(
+        "/crepe",
+        audioContextRef.current,
+        micStream,
+        () => setModelLoaded(true)
+      );
+      audioStream.current = micStream;
+    })();
   }, [tunerStarted]);
 
   useInterval(() => {
@@ -132,19 +125,19 @@ const Tuner = (effect, deps) => {
     });
   }, 1000 / 80);
 
-  function startTuner () {
-    if (tunerStarted == true){
+  function startTuner() {
+    setTunerStarted(!tunerStarted);
+    if (tunerStarted == true) {
       // console.log(audioContextRef.current.state);
       audioContextRef.current.suspend();
       // console.log(tunerStarted)
-    }
-    else if (tunerStarted == false) {
+    } else if (tunerStarted == false) {
       // console.log(audioContextRef.current.state);
       audioContextRef.current.resume();
       // console.log(tunerStarted)
     }
-    setTunerStarted(!tunerStarted)
   }
+
   return (
     <TunerWrapper>
       <Helmet>
